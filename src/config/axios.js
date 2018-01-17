@@ -1,10 +1,11 @@
 import axios from 'axios'
 import {LOGOUT} from '../store/mutation-types'
-import store from '../store/'
+import store from '../store/store'
+import router from '../router/router'
 
 var axiosIns = axios.create({
   baseURL: 'https://localhost:9090/'
-})
+});
 
 // // http request 拦截器
 // axiosIns.interceptors.request.use(
