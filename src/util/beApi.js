@@ -4,6 +4,7 @@ export const getUser = (username) => fetch('/user/userinfo', {username: username
 
 
 export const login = (user) => fetch('/user/login', user, 'post');
+export const logout = () => fetch('/user/logout');
 
 
 export const getImgs = (pageSize, currentPage, type) => fetch('/img/getImgs', {

@@ -48,7 +48,7 @@
           this.RECORD_USERINFO(res.data);
         } else {
           parmas = this.$routes.parmas;
-          this.$router.push((parmas && params.redirect) ? parmas.redirect : '/');
+          this.$router.push((parmas && params.redirect) ? parmas.redirect : '/home');
         }
       },
       async getCaptcha() {

@@ -2,14 +2,29 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import store from '../store/store'
 import login from '../components/login/login'
+import home from '../components/home/home'
+import piclist from '../components/pic/piclist'
 
 Vue.use(VueRouter);
 
 const routes = [
   {
-    path:'/login',
-    component:login
-  },
+    path: '/login',
+    component: login
+  }, {
+    path: '/home',
+    component: home,
+    meta:{
+      title:'主页',
+    },
+    children: [{
+      path: 'piclist',
+      component: piclist,
+      meta:{
+        title:'图片列表'
+      }
+    }]
+  }
 ]
 
 const router = new VueRouter({routes});
