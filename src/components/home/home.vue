@@ -12,7 +12,7 @@
       :show.sync="drawerVisibility"
       :show-mode="showMode"
       :placement="placement"
-      :drawer-style="{'background-color':'#35495e', width: '200px',height:'auto',overflow:'auto'}">
+      :drawer-style="{'background-color':'#35495e', width: '200px',height:'auto'}">
 
       <!-- drawer content -->
       <div slot="drawer">
@@ -23,7 +23,7 @@
       </div>
 
       <!-- main content -->
-      <view-box ref="viewBox" body-padding-top="46px" body-padding-bottom="55px">
+      <view-box ref="viewBox" body-padding-top="46px">
 
         <x-header slot="header"
                   style="width:100%;position:absolute;left:0;top:0;z-index:100;"
@@ -92,7 +92,7 @@
         this.showMenu = true;
       },
       async clickMenu(menuKey, item) {
-        if (item.label === '注销登陆') {
+        if (item && item.label === '注销登陆') {
           let res = await logout();
           if (res.code === 200) {
             this.LOGOUT();
