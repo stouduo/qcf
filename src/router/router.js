@@ -4,6 +4,7 @@ import store from '../store/store'
 import login from '../components/login/login'
 import home from '../components/home/home'
 import piclist from '../components/pic/piclist'
+import uploadpic from '../components/pic/uploadpic'
 
 Vue.use(VueRouter);
 
@@ -14,14 +15,20 @@ const routes = [
   }, {
     path: '/home',
     component: home,
-    meta:{
-      title:'主页',
+    meta: {
+      title: '主页',
     },
     children: [{
       path: 'piclist',
       component: piclist,
-      meta:{
-        title:'图片列表'
+      meta: {
+        title: '图片列表'
+      }
+    }, {
+      path: 'uploadpic',
+      component: uploadpic,
+      meta: {
+        title: '上传图片'
       }
     }]
   }

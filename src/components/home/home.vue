@@ -19,6 +19,8 @@
         <group title="图片管理" style="margin-top:20px;">
           <cell title="图片列表" link="/home/piclist" value="查看" @click.native="drawerVisibility = false">
           </cell>
+          <cell title="上传图片" link="/home/uploadpic" value="上传" @click.native="drawerVisibility = false">
+          </cell>
         </group>
       </div>
 

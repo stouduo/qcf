@@ -10,12 +10,13 @@ export const logout = () => fetch('/user/logout');
 export const getImgs = (pageSize, currentPage, type) => fetch('/img/getImgs', {
   pageSize: pageSize,
   currentPage: currentPage,
-  type: type
-})
+}, type);
 
 export const delImgs = (ids) => fetch('/img/delImgs', {ids: ids}, 'delete');
 
 export const captcha = () => fetch('/captcha')
+
+export const uploadPic = (data,progress) => fetch('/img/uploadPic', {data: data}, 'post',progress);
 
 
 
