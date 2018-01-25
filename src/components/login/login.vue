@@ -20,7 +20,7 @@
 </template>
 
 <script>
-  import {XHeader,XInput, Group, XButton, Cell} from 'vux'
+  import {XHeader, XInput, Group, XButton, Cell} from 'vux'
   import {mapState} from 'vuex'
   import {login, captcha} from '../../util/beApi'
 
@@ -44,11 +44,12 @@
       ...mapState(['RECORD_USERINFO']),
       async loginA() {
         let res = await login({username: this.username, password: this.password, code: this.code});
-        if (res.code === 200) {
-          this.RECORD_USERINFO(res.data);
-        } else {
+        if (res.code === 1) {
+          this.RECORD_USERINFO({username: res.data});
           parmas = this.$routes.parmas;
-          this.$router.push((parmas && params.redirect) ? parmas.redirect : '/home');
+          parmas && this.$router.push((parmas && params.redirect) ? parmas.redirect : '/home');
+        } else {
+
         }
       },
       async getCaptcha() {

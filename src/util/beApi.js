@@ -3,8 +3,8 @@ import fetch from './fetch'
 export const getUser = (username) => fetch('/user/userinfo', {username: username})
 
 
-export const login = (user) => fetch('/user/login', user, 'post');
-export const logout = () => fetch('/user/logout');
+export const login = (user) => fetch('/login', user, 'post');
+export const logout = () => fetch('/logout');
 
 
 export const getImgs = (pageSize, currentPage, type) => fetch('/img/getImgs', {
@@ -14,7 +14,7 @@ export const getImgs = (pageSize, currentPage, type) => fetch('/img/getImgs', {
 
 export const delImgs = (ids) => fetch('/img/delImgs', {ids: ids}, 'delete');
 
-export const captcha = () => fetch('/captcha')
+export const captcha = () => fetch('/user/captcha')
 
 export const uploadPic = (data,progress) => fetch('/img/uploadPic', {data: data}, 'post',progress);
 

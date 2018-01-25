@@ -35,7 +35,7 @@
       }
     },
     methods: {
-      reupload: function (index) {
+      reupload: index => {
         let pic = this.files[index];
         uploadPic(pic.file, (e) => {
           if (e.lengthComputable) {
@@ -50,7 +50,7 @@
           pic.process = 0;
         });
       },
-      autoUpload: function (e) {
+      autoUpload: e => {
         let pics = e.target.files;
         let i = 0;
         let pic;
