@@ -7,16 +7,15 @@ export const login = (user) => fetch('/login', user, 'post');
 export const logout = () => fetch('/logout');
 
 
-export const getImgs = (pageSize, currentPage, type) => fetch('/img/getImgs', {
+export const getImgs = (pageSize, currentPage) => fetch('/pic/getPics', {
   pageSize: pageSize,
   currentPage: currentPage,
-}, type);
+});
 
-export const delImgs = (ids) => fetch('/img/delImgs', {ids: ids}, 'delete');
+export const delImgs = (ids) => fetch('/pic/delPic', {ids: ids}, 'delete');
 
-export const captcha = () => fetch('/user/captcha')
 
-export const uploadPic = (data,progress) => fetch('/img/uploadPic', {data: data}, 'post',progress);
+export const uploadPic = (data,progress) => fetch('/pic/uploadPic', {data: data}, 'post',progress);
 
 
 

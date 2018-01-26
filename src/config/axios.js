@@ -4,8 +4,11 @@ import store from '../store/store'
 import router from '../router/router'
 
 var axiosIns = axios.create({
-  baseURL: 'https://localhost:9090/'
+  baseURL: 'http://localhost:9090/',
+  withCredentials: true
 });
+
+// axiosIns.defaults.headers.post['Content-Type']='application/x-www-form-urlencoded';
 
 // // http request 拦截器
 // axiosIns.interceptors.request.use(
@@ -21,23 +24,23 @@ var axiosIns = axios.create({
 
 // http response 拦截器
 axiosIns.interceptors.response.use(
-    response => {
-      return response
-    },
-    error => {
-      if (error.response) {
-        switch (error.response.status) {
-          case 401:
-                // 返回 401 清除token信息并跳转到登录页面
-          case 403:
-            store.commit(LOGOUT)
-            router.replace({
-              path: 'login',
-              query: {redirect: router.currentRoute.fullPath}
-            })
-        }
+  response => {
+    return response
+  },
+  error => {
+    if (error.response) {
+      switch (error.response.status) {
+        case 401:
+        // 返回 401 清除token信息并跳转到登录页面
+        case 403:
+          store.commit(LOGOUT)
+          router.replace({
+            path: '/',
+            query: {redirect: router.currentRoute.fullPath}
+          })
       }
-      return Promise.reject(error.response.data)   // 返回接口返回的错误信息
-    })
+    }
+    return Promise.reject(error.response.data)   // 返回接口返回的错误信息
+  })
 
 export default axiosIns

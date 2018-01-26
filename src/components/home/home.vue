@@ -96,18 +96,16 @@
       async clickMenu(menuKey, item) {
         if (item && item.label === '注销登陆') {
           let res = await logout();
-          if (res.code === 200) {
+          if (res.data.code === 1) {
             this.LOGOUT();
-            this.$router.push('/login');
+            this.$router.push('/');
           }
         }
       },
       afterEnter() {
         this.$vux && this.$vux.bus && this.$vux.bus.$emit('vux:after-view-enter');
       },
-      ...mapActions([
-        'LOGOUT'
-      ])
+      ...mapActions({LOGOUT: state => state.LOGOUT})
     },
     computed: {
       ...mapState({

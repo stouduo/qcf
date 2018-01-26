@@ -10,7 +10,8 @@
     </group>
     <group>
       <x-input class="weui-cell_vcode" type="text" v-model="code">
-        <img slot="right" class="weui-vcode-img" :src="captcha" @click.native="getCaptcha">
+        <img slot="right" class="weui-vcode-img" src="http://localhost:9090/user/captcha"
+             onclick="this.src='http://localhost:9090/user/captcha?'+new Date()*1">
       </x-input>
     </group>
     <group>
@@ -20,9 +21,9 @@
 </template>
 
 <script>
-  import {XHeader, XInput, Group, XButton, Cell} from 'vux'
+  import {AlertModule, XHeader, XInput, Group, XButton, Cell, Alert} from 'vux'
   import {mapState} from 'vuex'
-  import {login, captcha} from '../../util/beApi'
+  import {login} from '../../util/beApi'
 
   export default {
     components: {
@@ -30,31 +31,40 @@
       XButton,
       Group,
       Cell,
-      XHeader
+      XHeader,
+      Alert
     },
     data() {
       return {
         password: null,
         username: null,
         code: null,
-        captcha: null
       }
     },
     methods: {
-      ...mapState(['RECORD_USERINFO']),
+      ...mapState({
+        RECORD_USERINFO: state => state.RECORD_USERINFO
+      }),
       async loginA() {
-        let res = await login({username: this.username, password: this.password, code: this.code});
-        if (res.code === 1) {
-          this.RECORD_USERINFO({username: res.data});
-          parmas = this.$routes.parmas;
-          parmas && this.$router.push((parmas && params.redirect) ? parmas.redirect : '/home');
+        let res = await login({
+          username: this.username.replace(/\s/g, ""),
+          password: this.password,
+          code: this.code
+        });
+        if (res.data.code == 1) {
+          this.RECORD_USERINFO({username: res.data.username});
+          let params = this.$route.params;
+          params && this.$router.push((params && params.redirect) ? params.redirect : '/home');
         } else {
-
+          AlertModule.show({
+            title: '错误',
+            content: res.data.msg,
+          });
+          setTimeout(() => {
+            AlertModule.hide()
+          }, 3000)
         }
       },
-      async getCaptcha() {
-        this.captcha = await captcha('/captcha?d=' + new Date() * 1);
-      }
     }
   }
 </script>

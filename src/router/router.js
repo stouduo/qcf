@@ -10,7 +10,7 @@ Vue.use(VueRouter);
 
 const routes = [
   {
-    path: '/login',
+    path: '/',
     component: login
   }, {
     path: '/home',
@@ -37,7 +37,7 @@ const routes = [
 const router = new VueRouter({routes});
 
 router.beforeEach((to, from, next) => {
-  if (to.path == '/login') {
+  if (to.path == '/') {
     next();
     return;
   }
@@ -49,7 +49,7 @@ router.beforeEach((to, from, next) => {
       next();
     } else {
       next({
-        path: '/login',
+        path: '/',
         query: {redirect: to.fullPath}
       });
     }
