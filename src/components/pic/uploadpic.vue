@@ -35,26 +35,27 @@
       }
     },
     methods: {
-      reupload: index => {
+      reupload(index) {
         let pic = this.files[index];
-        uploadPic(pic.file, (e) => {
-          if (e.lengthComputable) {
-            pic.status = 'process';
-            pic.process = Math.ceil(e.loaded / e.total);
-          }
-        }).then(() => {
-          pic.status = 'success';
-          pic.process = 0;
-        }).catch(() => {
-          pic.status = 'error';
-          pic.process = 0;
-        });
+        if (pic)
+          uploadPic(pic.file, (e) => {
+            if (e.lengthComputable) {
+              pic.status = 'process';
+              pic.process = Math.ceil(e.loaded / e.total);
+            }
+          }).then(() => {
+            pic.status = 'success';
+            pic.process = 0;
+          }).catch(() => {
+            pic.status = 'error';
+            pic.process = 0;
+          });
       },
-      autoUpload: e => {
+      autoUpload(e) {
         let pics = e.target.files;
         let i = 0;
         let pic;
-        let _this = this;
+        let files = this.files;
         const reader = new FileReader();
         reader.readAsDataURL(pics[i]);
         reader.onload = function () {
@@ -64,7 +65,7 @@
             process: 0,
             file: pics[i]
           };
-          _this.files.push(pic);
+          files.push(pic);
           uploadPic(pics[i], (e) => {
             if (e.lengthComputable) {
               pic.status = 'process';

@@ -22,7 +22,7 @@
 
 <script>
   import {AlertModule, XHeader, XInput, Group, XButton, Cell, Alert} from 'vux'
-  import {mapState} from 'vuex'
+  import {mapMutations} from 'vuex'
   import {login} from '../../util/beApi'
 
   export default {
@@ -42,9 +42,9 @@
       }
     },
     methods: {
-      ...mapState({
-        RECORD_USERINFO: state => state.RECORD_USERINFO
-      }),
+      ...mapMutations([
+        'RECORD_USERINFO',
+      ]),
       async loginA() {
         let res = await login({
           username: this.username.replace(/\s/g, ""),
@@ -52,7 +52,7 @@
           code: this.code
         });
         if (res.data.code == 1) {
-          this.RECORD_USERINFO({username: res.data.username});
+          this.RECORD_USERINFO({username: res.data.data.username});
           let params = this.$route.params;
           params && this.$router.push((params && params.redirect) ? params.redirect : '/home');
         } else {

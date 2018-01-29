@@ -1,33 +1,37 @@
 <template>
-  <scroller lock-x height="200px" @on-scroll-bottom="onScrollBottom" ref="scrollerBottom" :scroll-bottom-offst="200">
-    <div class="demo-list-box" id="demo_list_box" :style="{height: `${height}px`}">
-      <flexbox :gutter="0">
-        <flexbox-item :span="1/3" v-for="(pic,index) in pics" :key="index" class="pics cbox vux-1px-t vux-tap-active"
-                      @click.native="show(index)">
-          <div class="vux-1px-r cbox-inner">
-            <img :src="pic.src">
-          </div>
-        </flexbox-item>
-      </flexbox>
-      <load-more v-if="!hasNoRecords" tip="正在加载"></load-more>
-      <load-more v-if="hasNoRecords" :show-loading="false" tip="暂无数据" background-color="#fbf9fe"></load-more>
-    </div>
+  <div>
+    <scroller lock-x scrollbar-y use-pullup height="100%" @on-scroll-bottom="loadMore" ref="picScroll"
+              :scroll-bottom-offst="200">
+      <div class="demo-list-box" id="demo_list_box" style="height: 100%">
+        <checker
+          v-model="delPics"
+          type="checkbox"
+          default-item-class="demo5-item"
+          selected-item-class="demo5-item-selected">
+          <flexbox :gutter="0" wrap="wrap">
+            <flexbox-item :span="1/3" v-for="(pic,index) in pics" :key="index"
+                          class="pics cbox vux-1px-t vux-tap-active">
+              <div v-if="!longTap" class="vux-1px-r cbox-inner" @click.native="show(index)" @touchstart="touchStart"
+                   @touchend="touchEnd">
+                <img :src="pic.src" width="100%" height="100%">
+              </div>
+              <checker-item v-else :value="index"><img :src="pic.src" width="100%" height="100%">
+              </checker-item>
+            </flexbox-item>
+          </flexbox>
+        </checker>
+      </div>
+    </scroller>
     <div v-transfer-dom>
       <previewer :list="pics" ref="previewer" :options="options">
-        <template slot="button-after">
-          <span class="previewer-delete-icon-box">
-            <img src="#" width="22" height="22" class="previewer-delete-icon"
-                 @click.prevent.stop="delPic">
-          </span>
-        </template>
       </previewer>
     </div>
-  </scroller>
+  </div>
 </template>
 
 
 <script>
-  import {Scroller, Flexbox, FlexboxItem, LoadMore, Previewer, TransferDom} from 'vux'
+  import {Checker, CheckerItem, Icon, Scroller, Flexbox, FlexboxItem, LoadMore, Previewer, TransferDom} from 'vux'
   import {mapState} from 'vuex'
   import {getImgs} from "../../util/beApi";
 
@@ -36,6 +40,9 @@
       TransferDom
     },
     components: {
+      Checker,
+      CheckerItem,
+      Icon,
       Scroller,
       Flexbox,
       FlexboxItem,
@@ -51,45 +58,52 @@
       delPic() {
         let index = this.$refs.previewer.getCurrentIndex();
         this.ids.push(this.pics[index].id);
-        this.pics.slice(index,1);
+        this.pics.slice(index, 1);
       },
-      onScrollBottom() {
+      loadMore() {
         if (!this.onFetching) {
           this.onFetching = true
           setTimeout(() => {
             this.index++;
-            this.pics.push(this.getPics());
+            this.getPics();
             this.$nextTick(() => {
-              this.$refs.scrollerBottom.reset()
-            })
+              this.$refs.picScroll.reset()
+            });
             this.onFetching = false
           }, 1000)
         }
       },
       async getPics() {
-        let ret = await getImgs(9, this.index).data;
-        this.hasNoRecords = !ret || ret.length == 0;
-        return ret;
+        let res = await getImgs(15, this.index);
+        this.pics = this.pics.concat(res.data.data);
+      },
+      touchStart() {
+        var self = this;
+        timeout = setTimeout(function (e) {
+          self.longTap = true;
+        }, 800);  //长按时间超过800ms，则执行传入的方法
+      },
+      touchEnd() {
+        clearTimeout(this.timeout);
       }
     },
     data() {
       return {
         height: window.innerHeight - 46 - 53,
         pics: [],
-        hasNoRecords: true,
+        timeout: null,
         index: 0,
+        longTap: true,
         options: {
           getThumbBoundsFn(index) {
             let thumbnail = document.querySelectorAll('.pics')[index]
             let pageYScroll = window.pageYOffset || document.documentElement.scrollTop
             let rect = thumbnail.getBoundingClientRect()
             return {x: rect.left, y: rect.top + pageYScroll, w: rect.width}
-          },
-          isClickableElement: function (el) {
-            return /previewer-delete-icon/.test(el.className)
           }
         },
-        ids: []
+        ids: [],
+        delPics: [],
       }
     },
     mounted() {
@@ -108,5 +122,19 @@
     display: block;
     text-align: center;
     color: #666;
+  }
+
+  .demo5-item {
+    width: 100%;
+    height: 100%;
+    border-radius: 3px;
+    border: 1px solid #ccc;
+    background-color: #fff;
+    margin-right: 6px;
+  }
+
+  .demo5-item-selected {
+    background: #ffffff url('../../assets/active.png') no-repeat right bottom;
+    border-color: #ff4a00;
   }
 </style>
