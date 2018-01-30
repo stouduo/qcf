@@ -25,7 +25,8 @@ const routes = [
       component: piclist,
       meta: {
         title: '图片列表',
-        requiresAuth: true
+        requiresAuth: true,
+        // showBottom:true
       }
     }, {
       path: 'uploadpic',
@@ -41,10 +42,6 @@ const routes = [
 const router = new VueRouter({routes});
 
 router.beforeEach((to, from, next) => {
-  if (to.path == '/') {
-    next();
-    return;
-  }
   let user = getStore('user');
   if (user) {
     store.state.userInfo = user;
@@ -52,6 +49,14 @@ router.beforeEach((to, from, next) => {
   }
   //获取store里面的token
   let state = store.state;
+  if (to.path == '/') {
+    if(state.userInfo && state.login){
+      next('/home');
+    }else{
+      next();
+      return;
+    }
+  }
   //判断要去的路由有没有requiresAuth
   if (to.meta.requiresAuth) {
     if (state.userInfo && state.login) {

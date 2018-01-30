@@ -41,6 +41,24 @@ store.registerModule('vux', {
     }
   }
 });
-
+store.registerModule('piclist', {
+  state: {
+    checkAll: false,
+    del: false,
+    showBottom: false,
+    delCount:0
+  },
+  mutations: {
+    updateCheckAll(state, status) {
+      state.checkAll = status.checkAll;
+    },
+    updateDel(state, status) {
+      state.del = status.del;
+    },
+    updateShowBottom(state, status) {
+      state.showBottom = status.showBottom;
+    }
+  },
+});
 
 export default store

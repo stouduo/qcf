@@ -33,6 +33,9 @@ methods.forEach(key => {
 })
 
 router.beforeEach(function (to, from, next) {
+
+  store.commit('updateShowBottom', {showBottom: to.path == '/home/piclist'});
+
   store.commit('updateLoadingStatus', {isLoading: true})
 
   const toIndex = history.getItem(to.path)

@@ -47,11 +47,28 @@
         </transition>
       </view-box>
     </drawer>
+    <div v-show="piclist.showBottom"
+         style="height:35px;text-align: center;width:100%;position:fixed;bottom:0;background-color: #f7f7fa">
+      <flexbox :gutter="0">
+        <flexbox-item :span="2">
+          <check-icon :value.sync="piclist.checkAll">全选</check-icon>
+        </flexbox-item>
+        <flexbox-item :span="8"></flexbox-item>
+        <flexbox-item :span="2" style="text-align: right">
+          <x-button mini type="warn" @click.native="delPics">删除({{piclist.delCount}})</x-button>
+        </flexbox-item>
+      </flexbox>
+    </div>
   </div>
 </template>
 
 <script>
   import {
+    ConfirmPlugin ,
+    CheckIcon,
+    XButton,
+    Flexbox,
+    FlexboxItem,
     Radio,
     Group,
     Cell,
@@ -67,14 +84,21 @@
     Loading,
     TransferDom
   } from 'vux'
+  import Vue from 'vue'
   import {mapState, mapActions} from 'vuex'
   import {logout} from '../../util/beApi'
+
+  Vue.use(ConfirmPlugin);
 
   export default {
     directives: {
       TransferDom
     },
     components: {
+      CheckIcon,
+      Flexbox,
+      XButton,
+      FlexboxItem,
       Radio,
       Group,
       Cell,
@@ -105,7 +129,19 @@
       afterEnter() {
         this.$vux && this.$vux.bus && this.$vux.bus.$emit('vux:after-view-enter');
       },
-      ...mapActions({LOGOUT: state => state.LOGOUT})
+      ...mapActions({LOGOUT: state => state.LOGOUT}),
+      delPics() {
+        let self = this;
+        this.$vux.confirm.show({
+          title: '删除图片',
+          content: '确定要全部删除？',
+          confirmText: '确定',
+          cancelText: '取消',
+          onConfirm() {
+            self.piclist.del = true;
+          }
+        })
+      }
     },
     computed: {
       ...mapState({
@@ -114,7 +150,8 @@
         deviceready: state => state.app.deviceready,
         demoTop: state => state.vux.demoScrollTop,
         isLoading: state => state.vux.isLoading,
-        direction: state => state.vux.direction
+        direction: state => state.vux.direction,
+        piclist: state => state.piclist
       }),
       leftOptions() {
         return {
@@ -142,13 +179,17 @@
       return {
         showMenu: false,
         showMode: 'push',
-        placement: 'left',
-        menus: {
-          menu1: {
-            label: '注销登陆',
-            type: 'warn'
+        placement:
+          'left',
+        menus:
+          {
+            menu1: {
+              label: '注销登陆',
+              type:
+                'warn'
+            }
           }
-        },
+        ,
         drawerVisibility: false,
       }
     }
