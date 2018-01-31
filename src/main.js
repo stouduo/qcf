@@ -6,11 +6,13 @@ import App from './App'
 import store from './store/store'
 import router from './router/router'
 import {sync} from 'vuex-router-sync'
+import {BusPlugin, ConfirmPlugin} from 'vux'
 
 FastClick.attach(document.body)
 
 Vue.config.productionTip = false
-
+Vue.use(BusPlugin)
+Vue.use(ConfirmPlugin)
 sync(store, router)
 // simple history management
 const history = window.sessionStorage
@@ -70,10 +72,6 @@ router.beforeEach(function (to, from, next) {
 router.afterEach(function (to) {
   isPush = false
   store.commit('updateLoadingStatus', {isLoading: false})
-  if (process.env.NODE_ENV === 'production') {
-    ga && ga('set', 'page', to.fullPath)
-    ga && ga('send', 'pageview')
-  }
 })
 
 /* eslint-disable no-new */

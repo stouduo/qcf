@@ -62,7 +62,6 @@
 
 <script>
   import {
-    ConfirmPlugin,
     CheckIcon,
     XButton,
     Flexbox,
@@ -82,11 +81,9 @@
     Loading,
     TransferDom
   } from 'vux'
-  import Vue from 'vue'
   import {mapState, mapActions} from 'vuex'
   import {logout} from '../../util/beApi'
 
-  Vue.use(ConfirmPlugin);
 
   export default {
     directives: {
