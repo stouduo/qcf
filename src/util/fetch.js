@@ -17,10 +17,10 @@ export default async (url = '', data = {}, type = 'get', config) => {
       return await axios.post(url, params, config);
       break;
     case 'put':
-      return await axios.put(url, params);
+      return await axios.put(url, {params:params});
       break;
     case 'delete':
-      return await axios.delete(url, params);
+      return await axios.delete(url, {params:params});
       break;
     default:
       return await axios.get(url, {params:params});

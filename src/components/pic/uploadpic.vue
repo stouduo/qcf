@@ -16,8 +16,8 @@
             </div>
           </li>
         </ul>
-        <div class="weui-uploader__input-box">
-          <input id="uploaderInput" class="weui-uploader__input" @change="autoUpload" type="file" accept="image/*"
+        <div class="weui-uploader__input-box" @change="autoUpload">
+          <input id="uploaderInput" class="weui-uploader__input" type="file" accept="image/*"
                  multiple/>
         </div>
       </div>

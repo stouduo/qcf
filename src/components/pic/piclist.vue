@@ -7,21 +7,13 @@
         <flexbox :gutter="0" wrap="wrap">
           <flexbox-item :span="1/3" v-for="(pic,index) in pics" :key="index"
                         class="pics cbox vux-1px-t vux-tap-active">
-            <div v-if="!longTap" class="vux-1px-r cbox-inner" @click.native="show(index)" @touchstart="touchStart"
-                 @touchend="touchEnd">
+            <div v-if="!longTap" class="vux-1px-r cbox-inner" @touchstart="touchStart(index)"
+                 @touchend="touchEnd" @click="show(index)">
               <img :src="pic.src" width="100%" height="100%">
             </div>
             <div v-else :class="delPics[index]?'demo5-item-selected':'demo5-item'" @click="update(index)">
               <img :src="pic.src" width="100%" height="100%">
             </div>
-            <!--<checker v-else-->
-            <!--v-model="delPics[index]"-->
-            <!--type="checkbox"-->
-            <!--default-item-class="demo5-item"-->
-            <!--selected-item-class="demo5-item-selected">-->
-            <!--<checker-item @on-item-click="del" :value="index"><img :src="pic.src" width="100%" height="100%">-->
-            <!--</checker-item>-->
-            <!--</checker>-->
           </flexbox-item>
         </flexbox>
       </div>
@@ -46,7 +38,7 @@
     Previewer,
     TransferDom
   } from 'vux'
-  import {mapState} from 'vuex'
+  import {mapState, mapMutations} from 'vuex'
   import {getImgs, delImgs} from "../../util/beApi";
 
   export default {
@@ -65,23 +57,35 @@
       document.querySelector('#demo_list_box').scrollTop = this.demoTop
     },
     methods: {
+      ...mapMutations([
+        'RESET_PICLIST',
+      ]),
       show(index) {
         this.$refs.previewer.show(index)
       },
-      delPic() {
+      async delPic() {
         for (let index in this.delPics) {
           if (this.delPics[index]) {
             this.ids.push(this.pics[index].id);
-            this.pics.slice(index, 1);
           }
         }
-        delImgs(this.ids);
-      },
-      update(index) {
-        this.$set(this.delPics, index, !this.delPics[index]);
-        if (this.delPics[index]) {
-          this.delCount++;
+        let res = await delImgs(this.ids);
+        if (res.data.code == 1) {
+          this.pics = [];
+          this.getPics();
+          this.ids = [];
+          this.delPics = [];
+          this.RESET_PICLIST();
         }
+      },
+      update(index, checkAll, del) {
+        this.$set(this.delPics, index, checkAll ? del : !this.delPics[index]);
+        if (this.delPics[index]) {
+          this.piclist.delCount++;
+        } else {
+          this.piclist.delCount--;
+        }
+        // this.piclist.checkAll = this.piclist.delCount == this.pics.length;
       },
       loadMore() {
         if (!this.onFetching) {
@@ -100,19 +104,20 @@
         let res = await getImgs(15, this.index);
         this.pics = this.pics.concat(res.data.data);
       },
-      touchStart() {
+      touchStart(index) {
         var self = this;
-        timeout = setTimeout(function (e) {
+       this.timeout = setTimeout(function (e) {
           self.longTap = true;
-          self.$parent.showBottom = true;
+          self.piclist.showBottom = true;
         }, 800);  //长按时间超过800ms，则执行传入的方法
       },
       touchEnd() {
         clearTimeout(this.timeout);
       },
-      checkAll() {
-        for (let index in this.delPics) {
-          this.update(index);
+      checkAllPic(check) {
+        this.piclist.delCount = check ? 0 : this.pics.length;
+        for (let index in this.pics) {
+          this.update(index, true, check);
         }
       }
     },
@@ -122,7 +127,7 @@
         pics: [],
         timeout: null,
         index: 0,
-        longTap: true,
+        longTap: false,
         options: {
           getThumbBoundsFn(index) {
             let thumbnail = document.querySelectorAll('.pics')[index]
@@ -137,13 +142,15 @@
     },
     mounted() {
       this.getPics();
+      this.piclist.showBottom = this.longTap;
     },
     computed: {
       ...mapState({
         demoTop: state => state.vux.demoScrollTop,
+        piclist: state => state.piclist,
         del: state => state.piclist.del,
         checkAll: state => state.piclist.checkAll,
-        delCount: state => state.piclist.delCount
+        showBottom: state => state.piclist.showBottom
       })
     },
     watch: {
@@ -153,8 +160,11 @@
         }
       },
       checkAll(val) {
-        if (val) {
-          this.checkAll();
+        this.checkAllPic(val);
+      },
+      showBottom(val) {
+        if (!val) {
+          this.longTap = val;
         }
       }
     }

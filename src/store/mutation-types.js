@@ -1,3 +1,4 @@
 export const GET_USERINFO = 'GET_USERINFO'
 export const LOGOUT = 'LOGOUT'
 export const RECORD_USERINFO = 'RECORD_USERINFO'
+export const RESET_PICLSIT = 'RESET_PICLIST'

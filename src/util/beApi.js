@@ -16,7 +16,7 @@ export const delImgs = (ids) => fetch('/pic/delPic', {ids: ids}, 'delete');
 
 
 export const uploadPic = (data, progress) => fetch('/pic/uploadPic', data, 'post', {
-  headers:{'Content-Type':'multipart/form-data'},
+  headers: {'Content-Type': 'multipart/form-data'},
   onUploadProgress: progress,
 });
 

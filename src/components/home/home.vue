@@ -48,23 +48,21 @@
       </view-box>
     </drawer>
     <div v-show="piclist.showBottom"
-         style="height:35px;text-align: center;width:100%;position:fixed;bottom:0;background-color: #f7f7fa">
-      <flexbox :gutter="0">
-        <flexbox-item :span="2">
-          <check-icon :value.sync="piclist.checkAll">全选</check-icon>
-        </flexbox-item>
-        <flexbox-item :span="8"></flexbox-item>
-        <flexbox-item :span="2" style="text-align: right">
-          <x-button mini type="warn" @click.native="delPics">删除({{piclist.delCount}})</x-button>
-        </flexbox-item>
-      </flexbox>
+         style="height:53px;width:100%;position:fixed;bottom:0;background-color: #f7f7fa">
+      <div style="float:left;margin-top:10px;">
+        <check-icon :value.sync="piclist.checkAll">全选</check-icon>
+      </div>
+      <div style="float:right;margin-top:-3px;margin-right:20px;">
+        <x-button mini type="warn" @click.native="delPics">删除({{piclist.delCount}})</x-button>
+        <x-button mini plain type="primary" @click.native="piclist.showBottom =false">取消</x-button>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
   import {
-    ConfirmPlugin ,
+    ConfirmPlugin,
     CheckIcon,
     XButton,
     Flexbox,

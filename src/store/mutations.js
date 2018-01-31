@@ -5,9 +5,20 @@ import {
 } from './mutation-types.js'
 
 import {setStore, getStore, removeStore} from '../util/util'
+import {RESET_PICLSIT} from "./mutation-types";
 
 
 export default {
+
+  [RESET_PICLSIT](state) {
+    state.piclist = {
+      checkAll: false,
+      del: false,
+      delCount: 0,
+      showBottom: false
+    }
+  },
+
   // 记录用户信息
   [RECORD_USERINFO](state, info) {
     state.userInfo = info;
